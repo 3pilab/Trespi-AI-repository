@@ -1,0 +1,40 @@
+{
+  "version": 2,
+  "lenses": ["risk", "readability", "reliability", "resilience"],
+  "high_risk_items": {
+    "1": "data or irreversible effects: migrations, changing or deleting stored data, persisted format changes",
+    "2": "security: auth, permissions, credentials, secrets, guards, sandbox",
+    "3": "contracts others consume: changing or removing public API, CLI flags, config formats, published exports",
+    "4": "concurrency: locks, races, async ordering",
+    "5": "delivery or environment: installers, release, CI, deploy, dependencies",
+    "6": "no test would catch a regression in what changes"
+  },
+  "hot_path_tokens": {
+    "auth": "auth",
+    "security": "security",
+    "webhook": "security",
+    "payments": "payments"
+  },
+  "test_path_segments": ["__tests__", "testdata"],
+  "test_file_patterns": ["_test\\.go$", "\\.test\\.", "\\.spec\\.", "^test_.*\\.py$", "_test\\.py$"],
+  "shell_extensions": [".sh", ".bash", ".zsh", ".ps1"],
+  "passive_extensions": [".md", ".mdx", ".rst", ".adoc", ".png", ".jpg", ".jpeg", ".gif"],
+  "image_extensions": [".png", ".jpg", ".jpeg", ".gif"],
+  "operational_basenames": ["agents.md", "claude.md", "gemini.md", "skill.md", "copilot-instructions.md"],
+  "operational_tokens": ["agent", "agents", "command", "commands", "instruction", "instructions", "orchestrator", "prompt", "prompts", "rule", "rules", "runtime", "skill", "skills", "workflow", "workflows"],
+  "operational_segments": [".agents", ".claude", ".cursor", ".github"],
+  "configuration_basenames": ["go.mod", "go.sum", "package.json", "package-lock.json", "pnpm-lock.yaml", "yarn.lock", "dockerfile", "makefile"],
+  "configuration_extensions": [".json", ".yaml", ".yml", ".toml", ".ini", ".env"],
+  "generated_patterns": ["(^|/)(testdata/golden|__snapshots__)/", "\\.(golden|snap)$"],
+  "dangerous_sinks": [
+    {"name": "TLS verification disabled (Go)", "extensions": [".go"], "pattern": "\\bInsecureSkipVerify\\s*:\\s*true\\b"},
+    {"name": "TLS verification disabled (JS)", "extensions": [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs"], "pattern": "\\brejectUnauthorized\\s*:\\s*false\\b|\\bNODE_TLS_REJECT_UNAUTHORIZED\\s*=\\s*['\"]?0\\b"},
+    {"name": "TLS verification disabled (Python)", "extensions": [".py"], "pattern": "\\bverify\\s*=\\s*False\\b|\\bCERT_NONE\\b|\\bcheck_hostname\\s*=\\s*False\\b"},
+    {"name": "TLS verification disabled (shell)", "extensions": [".sh", ".bash", ".zsh"], "pattern": "\\bcurl\\s+(?:[^;|]*\\s)?(?:--insecure|-k)(?:\\s|$)"},
+    {"name": "unsafe deserialization (Python)", "extensions": [".py"], "pattern": "\\bpickle\\.loads?\\s*\\(|\\byaml\\.(?:unsafe_load|load)\\s*\\(|\\bmarshal\\.loads?\\s*\\("},
+    {"name": "unsafe deserialization (Java/C#/PHP/Ruby)", "extensions": [".java", ".kt", ".cs", ".php", ".rb"], "pattern": "\\bObjectInputStream\\s*\\(|\\bBinaryFormatter\\s*\\(|(?:^|[^\\w.])unserialize\\s*\\(|\\bMarshal\\.load\\s*\\("},
+    {"name": "runtime code evaluation", "extensions": [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".py", ".php", ".rb"], "pattern": "(?:^|[^\\w.])eval\\s*\\(|\\bnew\\s+Function\\s*\\(|\\bvm\\.runInNewContext\\s*\\("},
+    {"name": "shell composition (Python)", "extensions": [".py"], "pattern": "\\bsubprocess\\.(?:run|Popen|call|check_call|check_output)\\s*\\([^\\n]*\\bshell\\s*=\\s*True\\b|\\bos\\.system\\s*\\(\\s*f[\"']"},
+    {"name": "shell composition (JS)", "extensions": [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs"], "pattern": "\\bchild_process\\.exec(?:Sync)?\\s*\\(\\s*`[^`]*\\$\\{|\\bexec(?:Sync)?\\s*\\(\\s*`[^`]*\\$\\{"}
+  ]
+}
